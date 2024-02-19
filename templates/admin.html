@@ -211,7 +211,7 @@
 
 <body>
     <h1 id="toc">AllTalk TTS for Text generation webUI</h1>
-    <iframe src="http://{{ params.ip_address }}:{{ params.port_number }}/settings" width="100%" height="500"
+    <iframe src="/settings" width="100%" height="500"
         frameborder="0" style="margin: 0; padding: 0;"></iframe>
     <h2>Table of Contents</h2>
     <ul>
@@ -273,10 +273,10 @@
             here</a><br />Update instructions <a href="https://github.com/erew123/alltalk_tts?#-updating"
             target="_blank" rel="noopener">link here</a><br />Help and issues <a
             href="https://github.com/erew123/alltalk_tts?#-help-with-problems" target="_blank" rel="noopener">link
-            here</a><br />TTS Generator <a href="http://127.0.0.1:7851/static/tts_chunk_player/tts_chunk_player.html"
+            here</a><br />TTS Generator <a href="/static/tts_chunk_player/tts_chunk_player.html"
             target="_blank" rel="noopener">link
             here<br /><br /></a><span style="text-decoration: underline;"><strong>Text generation webUI</strong></span>
-        <br />Web interface&nbsp;<a href="http://{{ params.ip_address }}:7860" target="_blank" rel="noopener">link
+        <br />Web interface&nbsp;<a id="infoWebURL" href="#" target="_blank" rel="noopener">link
             here</a> <br />Documentation <a href="https://github.com/oobabooga/text-generation-webui/wiki"
             target="_blank" rel="noopener">link here</a>
     </p>
@@ -284,9 +284,9 @@
 
     <h2 id="server-information">Server Information</h2>
     <ul>
-        <li>Base URL: <code>http://{{ params.ip_address }}:{{ params.port_number }}</code></li>
+        <li>Base URL: <code class="rootURL">http://127.0.0.1</code></li>
         <li>Server Status:
-            <code><a href="http://{{ params.ip_address }}:{{ params.port_number }}/ready">http://{{ params.ip_address }}:{{ params.port_number }}/ready</a></code>
+            <code><a href="/ready" style="color: #3366ff"><span class="rootURL">http://127.0.0.1</span>/ready</a></code>
         </li>
     </ul>
     <p style="padding-left: 30px;"><a href="#toc">Back to top of page</a></p>
@@ -350,10 +350,18 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const ipAddress = "{{ params.ip_address }}";
-            const portNumber = "{{ params.port_number }}";
-            const url = `http://${ipAddress}:${portNumber}/api/voices`;
 
+            const origin = window.location.origin;
+            document.querySelectorAll('.rootURL').forEach((element) => {
+                element.textContent = origin;
+                element.style.color = element.style.color || element.parentElement?.style.color || 'black';
+            });
+
+            const webURL = new URL(origin);
+            webURL.port = 8080;
+            document.getElementById('infoWebURL').setAttribute('href', webURL.toString());
+            
+            const url = `${origin}/api/voices`;
             fetch(url)
                 .then(response => response.json())
                 .then(data => {
@@ -406,9 +414,7 @@
         });
         // Form submit
         const form = document.getElementById('ttsForm');
-        const ipAddress = "{{ params.ip_address }}";
-        const portNumber = "{{ params.port_number }}";
-        const baseurl = `http://${ipAddress}:${portNumber}`;
+        const baseurl = window.location.origin;
         form.addEventListener('submit', async (event) => {
             event.preventDefault();
 
@@ -466,7 +472,7 @@
         speech using the voice of your choice. Whether you're creating audio content or just want to hear text read
         aloud, the TTS Generator is equipped to handle it all efficiently.</p>
     <p style="padding-left: 30px;">The TTS Generator is available on this <a
-            href="http://127.0.0.1:7851/static/tts_chunk_player/tts_chunk_player.html" target="_blank"
+            href="/static/tts_chunk_player/tts_chunk_player.html" target="_blank"
             rel="noopener">link</a></p>
     <h4>Quick Start</h4>
     <ul>
@@ -1355,7 +1361,7 @@
 
         <h3>TTS Generation Endpoint</h3>
         <ul>
-            <li><strong>URL</strong>: <span style="color: #3366ff;">http://127.0.0.1:7851/api/tts-generate</span></li>
+            <li><strong>URL</strong>: <span style="color: #3366ff;"><span  class="rootURL" >http://127.0.0.1</span>/api/tts-generate</span></li>
             <li><strong>Method</strong>: <span style="color: #3366ff;">POST</span></li>
             <li><strong>Content-Type</strong>: <span style="color: #3366ff;">application/x-www-form-urlencoded</span>
             </li>
@@ -1364,7 +1370,7 @@
         <h3>Example command line</h3>
         <p style="padding-left: 30px;">Standard TTS speech Example (standard text) generating a time-stamped file</p>
         <p style="padding-left: 30px;"><span style="color: #3366ff;">curl -X POST
-                "http://127.0.0.1:7851/api/tts-generate" -d "text_input=</span><span style="color: #ff9900;">All of this
+                "<span class="rootURL">http://127.0.0.1:7851</span>/api/tts-generate" -d "text_input=</span><span style="color: #ff9900;">All of this
                 is text spoken by the character. This is text not inside quotes, though that doesnt matter in the
                 slightest</span><span style="color: #3366ff;">" -d "text_filtering=</span><span
                 style="color: #339966;">standard</span><span style="color: #3366ff;">" -d
@@ -1377,7 +1383,7 @@
                 "autoplay_volume=0.8"</span></p>
         <p style="padding-left: 30px;">Narrator Example (standard text)&nbsp;generating a time-stamped file</p>
         <p style="padding-left: 30px;"><span style="color: #3366ff;">curl -X POST
-                "http://127.0.0.1:7851/api/tts-generate" -d "text_input=</span><span style="color: #ff9900;">*This is
+                "<span class="rootURL">http://127.0.0.1:7851</span>/api/tts-generate" -d "text_input=</span><span style="color: #ff9900;">*This is
                 text spoken by the narrator* &bsol;"This is text spoken by the character&bsol;". This is text not inside
                 quotes.</span><span style="color: #3366ff;">" -d "text_filtering=</span><span
                 style="color: #339966;">standard</span><span style="color: #3366ff;">" -d
@@ -1513,27 +1519,27 @@
         <p><strong>Example JSON TTS Generation Response:</strong></p>
         <p style="padding-left: 30px;"><span style="color: #339966;">{"status": "generate-success", "output_file_path":
                 "C:\\text-generation-webui\\extensions\\alltalk_tts\\outputs\\myoutputfile_1703149973.wav",
-                "output_file_url": "http://127.0.0.1:7851/audio/myoutputfile_1703149973.wav"}</span></p>
+                "output_file_url": "<span class="rootURL">http://127.0.0.1:7851</span>/audio/myoutputfile_1703149973.wav"}</span></p>
 
         <h4>Switching Model</h4>
         <p style="padding-left: 30px;"><span style="color: #3366ff;">curl -X POST
-                "http://127.0.0.1:7851/api/reload?tts_method=API%20Local"</span><br /><span style="color: #3366ff;">
-                curl -X POST "http://127.0.0.1:7851/api/reload?tts_method=API%20TTS"</span><br /><span
+                "<span class="rootURL">http://127.0.0.1:7851</span>/api/reload?tts_method=API%20Local"</span><br /><span style="color: #3366ff;">
+                curl -X POST "<span class="rootURL">http://127.0.0.1:7851</span>/api/reload?tts_method=API%20TTS"</span><br /><span
                 style="color: #3366ff;"> curl -X POST
-                "http://127.0.0.1:7851/api/reload?tts_method=XTTSv2%20Local"</span></p>
+                "<span class="rootURL">http://127.0.0.1:7851</span>/api/reload?tts_method=XTTSv2%20Local"</span></p>
         <p style="padding-left: 30px;">Switch between the 3 models respectively.</p>
         <p style="padding-left: 30px;">JSON return <span style="color: #339966;">{"status": "model-success"}</span></p>
 
         <h4>Switch DeepSpeed</h4>
         <p style="padding-left: 30px;"><span style="color: #3366ff;">curl -X POST
-                "http://127.0.0.1:7851/api/deepspeed?new_deepspeed_value=True"</span></p>
+                "<span class="rootURL">http://127.0.0.1:7851</span>/api/deepspeed?new_deepspeed_value=True"</span></p>
         <p style="padding-left: 30px;">Replace True with False to disable DeepSpeed mode.</p>
         <p style="padding-left: 30px;">JSON return <span style="color: #339966;">{"status": "deepspeed-success"}</span>
         </p>
 
         <h4>Switching Low VRAM</h4>
         <p style="padding-left: 30px;"><span style="color: #3366ff;">curl -X POST
-                "http://127.0.0.1:7851/api/lowvramsetting?new_low_vram_value=True"</span></p>
+                "<span class="rootURL">http://127.0.0.1:7851</span>/api/lowvramsetting?new_low_vram_value=True"</span></p>
         <p style="padding-left: 30px;">Replace True with False to disable Low VRAM mode.</p>
         <p style="padding-left: 30px;">JSON return <span style="color: #339966;">{"status": "lowvram-success"}</span>
         </p>
@@ -1541,38 +1547,38 @@
         <h4>Ready Endpoint</strong></h4>
         <p>Check if the Text-to-Speech (TTS) service is ready to accept requests.</p>
         <ul>
-            <li>URL: <span style="color: #3366ff;">http://127.0.0.1:7851/api/ready</span></li>
+            <li>URL: <span style="color: #3366ff;"><span class="rootURL">http://127.0.0.1:7851</span>/api/ready</span></li>
             <li>Method: <span style="color: #3366ff;">GET</span></li>
             <li>Response: <span style="color: #339966;">Ready</span></li>
         </ul>
         <p style="padding-left: 30px;"><span style="color: #3366ff;">curl -X GET
-                "http://127.0.0.1:7851/api/ready"</span></p>
+                "<span class="rootURL">http://127.0.0.1:7851</span>/api/ready"</span></p>
 
         <h4>Voices List Endpoint</strong></h4>
         <p>Retrieve a list of available voices for generating speech.</p>
         <ul>
-            <li>URL: <span style="color: #3366ff;">http://127.0.0.1:7851/api/voices</span></li>
+            <li>URL: <span style="color: #3366ff;"><span class="rootURL">http://127.0.0.1:7851</span>/api/voices</span></li>
             <li>Method: <span style="color: #3366ff;">GET</span></li>
         </ul>
         <p style="padding-left: 30px;"><span style="color: #3366ff;">curl -X GET
-                "http://127.0.0.1:7851/api/voices"</span></p>
+                "<span class="rootURL">http://127.0.0.1:7851</span>/api/voices"</span></p>
         <p style="padding-left: 30px;">JSON return: <span style="color: #339966;">{"voices": ["voice1.wav",
                 "voice2.wav", "voice3.wav"]}</span></p>
 
         <h4><strong>Preview Voice Endpoint</strong></h4>
         <p>Generate a preview of a specified voice with hardcoded settings.</p>
         <ul>
-            <li>URL: <span style="color: #3366ff;">http://127.0.0.1:7851/api/previewvoice/</span></li>
+            <li>URL: <span style="color: #3366ff;"><span class="rootURL">http://127.0.0.1:7851</span>/api/previewvoice/</span></li>
             <li>Method: <span style="color: #3366ff;">POST</span></li>
             <li>Content-Type: <span style="color: #3366ff;">application/x-www-form-urlencoded</span></li>
         </ul>
         <p style="padding-left: 30px;"><span style="color: #3366ff;">curl -X POST
-                "http://127.0.0.1:7851/api/previewvoice/" -F "voice=female_01.wav"</span></p>
+                "<span class="rootURL">http://127.0.0.1:7851</span>/api/previewvoice/" -F "voice=female_01.wav"</span></p>
         <p style="padding-left: 30px;">Replace <span style="color: #3366ff;">female_01.wav</span> with the name of the
             voice sample you want to hear.</p>
         <p style="padding-left: 30px;">JSON return: <span style="color: #339966;">{"status": "generate-success",
                 "output_file_path": "/path/to/outputs/api_preview_voice.wav", "output_file_url":
-                "http://127.0.0.1:7851/audio/api_preview_voice.wav"}</span></p>
+                "<span class="rootURL">http://127.0.0.1:7851</span>/audio/api_preview_voice.wav"}</span></p>
 
         <p><a href="#toc">Back to top of page<br /></a></p>
 
